@@ -2,11 +2,11 @@
 
 This is an ElasticNet-based predictor of chronological age from Chromatin State (ChromHMM) files.  
 
-- ./data : would be filled with processed data files, not provided  
+* ./data : would be filled with processed data files, not provided  
 
-./scripts : the preprocessing, model training, and postprocessing scripts  
-  -- /preprocessing : does feature selection and combines seperate data files into a single data matrix of features    
-    -- -- /auto_correlation_analysis.py : measures the autocorrelation of a chromatin state segmentation to inform feature selection  
+* ./scripts : the preprocessing, model training, and postprocessing scripts  
+  * -- /preprocessing : does feature selection and combines seperate data files into a single data matrix of features
+    * -- -- /auto_correlation_analysis.py : measures the autocorrelation of a chromatin state segmentation to inform feature selection  
     -- -- /average_windows.py : averages adjacent windows in chromatin state segmentation, one option for feature selection  
     -- -- /filter_by_functional_element.py : removes all windows not in a GENCODE annotated functional element, e.g. gene body  
     -- -- /flatten_chromatin_state_files.py : takes all the posterior files for a given chromosome, breaks them into smaller 10k window pieces, and flattens them so that each row is a sample and the columns are the 10k*12 states  
