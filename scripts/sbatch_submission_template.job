@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --array=1
+#SBATCH --output=./slurm_out/array_%A_%a.out
+#SBATCH --error=./slurm_out/array_%A_%a.err
+#SBATCH --partition=nrnb-compute
+#SBATCH --mem=256GB
+#SBATCH --time=24:00:00
+
+module purge
+eval "$(conda shell.bash hook)"
+conda activate /cellar/users/zkoch/miniconda3/envs/big_data
+
+#srun python ./pre_processing/flatten_chromatin_state_files.py $SLURM_ARRAY_TASK_ID ../blueprint_data/blueprint_disease_sample_list.txt /cellar/users/zkoch/cs_clock_proj/blueprint_data/processed_data/disease_only_gene_bodies /cellar/users/zkoch/cs_clock_proj/blueprint_data/processed_data/disease_only_gene_bodies_flattened_partitioned 
+#srun python pre_processing/filter_by_functional_element.py ../blueprint_data/POSTERIOR_Blueprint_release_201608/POSTERIOR_disease/ ../gencode_data/gencode.v38.annotation.tsv $SLURM_ARRAY_TASK_ID /cellar/users/zkoch/cs_clock_proj/blueprint_data/processed_data/disease_only_gene_bodies
+#srun python ./feature_selection/average_windows.py /cellar/users/zkoch/cs_clock_proj/blueprint_data/raw_data $SLURM_ARRAY_TASK_ID 10 /cellar/users/zkoch/cs_clock_proj/blueprint_data/processed_data/raw_data_10WinAvg/
+
+srun python ./train_model/ChromatinClock.py /cellar/users/zkoch/cs_clock_proj/blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/selected_features/smaller_top1%_variance_dataset.csv ../blueprint_data/all_samples_age_pairs.tsv /cellar/users/zkoch/cs_clock_proj/blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/trained_clock train_cv
+
+
+#srun python ./pre_processing/make_feature_matrix.py variance ../blueprint_data/processed_data/raw_data_flattened_partitioned ../blueprint_data/processed_data/no0age_var_above_.1_flattened_partitioned 
+
+#srun python ./pre_processing/make_feature_matrix.py from_file  ../blueprint_data/processed_data/disease_raw_data_flattened_partitioned ../blueprint_data/processed_data/disease_raw_data_flattened_partitioned/selected_features ../blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/selected_features/all_variance_dict.pkl
+
+#srun python ./post_training_analyses/get_model_features_from_test_data.py ../blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/trained_clock/log_top_.1%_wholegenome_no0age_trained_model.pickle ../blueprint_data/processed_data/disease_raw_data_flattened_partitioned/ ../blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/prediction_results/blueprint_disease/disease_features_this_model_no0ages ../blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/selected_features/all_variance_dict.pkl $SLURM_ARRAY_TASK_ID
+
+#srun python ./post_training_analyses/test_clock.py ../blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/prediction_results/blueprint_disease/disease_features_this_model_no0ages ../blueprint_data/all_samples_age_pairs.tsv ../blueprint_data/processed_data/raw_data_var_above_.1_flattened_partitioned/prediction_results/blueprint_disease/disease_features_this_model_no0ages/feat_coef_dict.pkl 
