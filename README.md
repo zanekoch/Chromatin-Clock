@@ -2,7 +2,7 @@
 
 This is an ElasticNet-based predictor of chronological age from Chromatin State (ChromHMM) files.  
 
-* ./data : would be filled with processed data files, not provided  
+- ./data : would be filled with processed data files, not provided  
 
 ./scripts : the preprocessing, model training, and postprocessing scripts  
   -- /preprocessing : does feature selection and combines seperate data files into a single data matrix of features    
